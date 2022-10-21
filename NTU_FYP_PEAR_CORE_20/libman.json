@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "vue@2.6.9",
+      "destination": "wwwroot/lib/vue/"
+    },
+    {
+      "library": "axios@0.21.1",
+      "destination": "wwwroot/lib/axios/"
+    },
+    {
+      "provider": "unpkg",
+      "library": "vue-stepper@1.4.2",
+      "destination": "wwwroot/lib/vue-stepper/"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+﻿@{
+    ViewData["Title"] = "Patient Management";
+}
+
+<div id="app">
+    <div class="buttonGroup">
+        <button id="activeButton" v-on:click="getPatients('&isActive=1')" class="buttonSelector">Activity</button>
+        <button id="inactiveButton" v-on:click="getPatients('&isActive=0')" class="buttonSelector">Patient</button>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            Manage Adhoc
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered table-hover dt-responsive " id="sample_3" cellspacing="0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="min-tablet">Activity Title</th>
+                        @*<th class="min-phone-l">Min Duration</th>
+                <th class="min-phone-l">Max Duration</th>*@
+                        <th> <input onchange="filter()" type="checkbox" name="isFixed" value="1"> Compulsory</th>
+                        <th> <input onchange="filter()" type="checkbox" name="isFixed" value="1"> Fixed</th>
+                        <th> <input onchange="filter()" type="checkbox" name="isGroup" value="1"> Group</th>
+                        <th> <input onchange="filter()" type="checkbox" name="isGroup" value="1"> Available</th>
+                        <th></th>
+
+                        <th class="none">Short Title</th>
+
+                        <th class="none">Activity Description</th>
+                        <th class="none">Start Date</th>
+                        <th class="none">End Date</th>
+
+                        <th class="none">Min Duration</th>
+                        <th class="none">Max Duration</th>
+                        <th class="none">Min People Required</th>
+                        <th class="none">Available on</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button class="buttonSelector2">Edit</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+       
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    patients: []
+                }
+            },
+            mounted() {
+                this.getPatients('&isActive=1');
+                $('.activeButton').addClass('active');
+            },
+            methods: {
+                getPatients: function (msg) {
+                    var vm = this;
+                    this.patients.splice(0);
+
+                    $.ajax({ url: "/api/patient?token=123&masked=0" + msg, method: "GET" })
+                        .done(function (response) {
+                            vm.patients = response.data;
+                        });
+                }
+            }
+        });
+    </script>
+}

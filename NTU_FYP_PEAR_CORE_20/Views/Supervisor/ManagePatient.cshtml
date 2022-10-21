@@ -1,0 +1,198 @@
+﻿@{
+    ViewData["Title"] = "Patient Management";
+}
+
+<div id="app">
+    <div class="buttonGroup">
+        <button id="activeButton" v-on:click="getPatients('&isActive=1')" class="buttonSelector">Active</button>
+        <button id="inactiveButton" v-on:click="getPatients('&isActive=0')" class="buttonSelector">Inactive</button>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            Patient Management
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered table-hover dt-responsive " id="sample_3" cellspacing="0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">Patient Name</th>
+                        <th scope="col">Gender</th>
+                        <th scope="col">Caregiver</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="p in patients">
+                        <tr v-on:click="p.contentVisible = !p.contentVisible">
+                            <td>{{p.firstName}} {{p.lastName}}</td>
+                            <td>{{p.gender}}</td>
+                            <td>{{p.caregiverName}}</td>
+                            <td v-if="p.startDate < new Date().toLocaleString()">Joined</td>
+                            <td v-else>Yet to Join</td>
+                            <td>
+                                <div class="grid-container">
+                                    <button class="buttonSelector2">Schedule</button>
+                                    <button class="buttonSelector2">Preference</button>
+                                    <button class="buttonSelector2">Medical</button>
+                                    <button class="buttonSelector2">Album</button>
+                                    <button class="buttonSelector2">Allocation</button>
+                                    <button class="buttonSelector2">Problem Log</button>
+                                    <button class="buttonSelector2">Attendance</button>
+                                    <button class="buttonRemove">Remove</button>
+                                    <i v-if="p.contentVisible == false" class="float-right fa fa-chevron-down fa-lg" aria-hidden="true"></i>
+                                    <i v-if="p.contentVisible == true" class="float-right fa fa-chevron-up fa-lg" aria-hidden="true"></i>
+                                </div>
+                            </td>
+                        </tr>
+                        <template>
+                            <tr v-if="p.contentVisible">
+                                <td colspan="6">
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Patient Information</h2>
+                                        Preferred Name: {{p.preferredName}} <br />
+                                        NRIC: Sxxxx{{p.nric.substring(5,9)}}<br />
+                                        Preferred Language: {{p.preferredLanguage}}<br />
+                                        Date Of Birth:{{p.dob}}<br />
+                                        Joined Date: {{p.startDate}}<br />
+                                        Departure Date: {{p.endDate}}<br />
+                                        Address: {{p.address}} <br />
+                                        Home No.: {{p.homeNo}}<br />
+                                        Mobile No.: {{p.handphoneNo}}<br />
+                                    </div>
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">General Information</h2>
+                                        <div class="card-body">
+                                            Mobility: {{p.mobility.list_Mobility.value}}<br />
+                                            Live With: {{p.socialHistory.list_LiveWith.value}}<br />
+                                            Religion: {{p.socialHistory.list_Religion.value}}<br />
+                                            Education: {{p.socialHistory.list_Education.value}}<br />
+                                            Occupation: {{p.socialHistory.list_Occupation.value}}<br />
+                                            Pet: {{p.socialHistory.list_Pet.value}}<br />
+                                            Diet: {{p.socialHistory.list_Diet.value}}<br />
+                                            Exercise: {{p.socialHistory.exercise}}<br />
+                                            Caffeine Use: {{p.socialHistory.caffeineUse}}<br />
+                                            Tobacco Use: {{p.socialHistory.tobaccoUse}}<br />
+                                            Secondhand Smoker: {{p.socialHistory.secondhandSmoker}}<br />
+                                            Alcohol Use: {{p.socialHistory.value}}<br />
+                                            Drug Use: {{p.socialHistory.alcoholUse}}<br />
+                                            Sexually Active: {{p.socialHistory.sexuallyActive}}<br />
+                                        </div>
+                                    </div>
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Guardian Information</h2>
+                                        <div v-for="g in p.guardianList">
+                                            Guardian Name: {{g.guardianName}} <br />
+                                            Guardian NRIC: Sxxxx{{g.guardianNRIC.substring(5,9)}}<br />
+                                            Guardian Relationship: {{g.list_Relationship.value}}<br />
+                                            Guardian Contact No.: {{g.guardianContactNo}}<br />
+                                            Guardian Email: {{g.guardianEmail}}<br />
+                                        </div>
+                                    </div>
+                                    <div class="patientBox">
+                                        <h2><a class="manageTitle" :href="'/Supervisor/ManagePatientPersonalPreference/' + p.patientID">Personal Preferences</a></h2>
+                                        <b>Likes:</b>
+                                        <div v-if="p.likeList != null" v-for="ll in p.likeList">
+                                            {{ll.list_LikeDislike.value}}
+                                        </div>
+                                        <b>Dislikes:</b>
+                                        <div v-if="p.dislikeList != null" v-for="dl in p.dislikeList">
+                                            {{dl.list_LikeDislike.value}}
+                                        </div>
+                                        <b>Hobbies:</b>
+                                        <div v-if="p.hobbyList != null" v-for="hl in p.hobbyList">
+                                            {{hl.list_Hobby.value}}
+                                        </div>
+                                        <b>Habits:</b>
+                                        <div v-if="p.habitList != null" v-for="hl in p.habitList">
+                                            {{hl.list_Habit.value}}
+                                        </div>
+                                    </div>
+
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Dementia Condition</h2>
+                                        <div v-for="dt in p.dementiaTypeList">
+                                            {{dt.list_DementiaType.value}}
+                                        </div>
+                                    </div>
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Medical History</h2>
+                                        <div v-for="mh in p.medicalHistoryList">
+                                            {{mh.medicalDetails}}
+                                        </div>
+                                    </div>
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Vitals</h2>
+                                        <div v-if="p.vitalList != null" v-for="vl in p.vitalList">
+                                            Taken: {{vl.afterMeal}}<br />
+                                            Temperature: {{vl.temperature}}<br />
+                                            Heart Rate: {{vl.heartRate}}<br />
+                                            Blood Pressure: {{vl.systolicBP}}<br />
+                                            Blood Sugar Level: {{vl.bloodSugarlevel}}<br />
+                                            SpO2: {{vl.spO2}}<br />
+                                            Height: {{vl.height}}<br />
+                                            Weight: {{vl.weight}}<br />
+                                            Notes: {{vl.vitalRemarks}}<br />
+                                        </div>
+                                    </div>
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Allergies</h2>
+                                        <div v-for="a in p.allergyList">
+                                            {{a.list_Allergy.value}}
+                                        </div>
+                                    </div>
+
+                                    <div class="patientBox">
+                                        <h2 class="manageTitle">Routine</h2>
+                                        N.A
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+
+                    </template>
+                </tbody>
+            </table>
+
+            <a class="buttonTableAdd" href="/Supervisor/AddPatient">Add Patient</a>
+            <br />
+            <br />
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+       
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    patients: [],
+                }
+            },
+            mounted() {
+                this.getPatients('&isActive=1');
+                $('.activeButton').addClass('active');
+            },
+            methods: {
+                getPatients: function (msg) {
+                    var vm = this;
+                    this.patients.splice(0);
+
+                    $.ajax({ url: "/api/patient?token=123&masked=0" + msg, method: "GET" })
+                        .done(function (response) {
+                            vm.patients = response.data;
+                            console.dir(response.data)
+                        });
+                }
+            },
+            showRow(data) {
+                this.contentVisible = !this.contentVisible;
+            }
+        });
+    </script>
+}

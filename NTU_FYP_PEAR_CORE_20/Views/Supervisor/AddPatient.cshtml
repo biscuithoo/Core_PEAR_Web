@@ -1,0 +1,870 @@
+﻿@{
+    ViewData["Title"] = "Add Patient";
+}
+
+
+<div id="app" class="card mb-3">
+    <div class="card-header">
+        Add Patient
+    </div>
+    <div class="card-body stepper">
+        <ul class="progress-indicator"> 
+        <li role="presentation"> <a class="persistant-disabled" href="#stepper-step-1" data-toggle="tab" aria-controls="stepper-step-1" role="tab" title="Personal Information"><span class="bubble"></span> Step 1. </a></li> 
+        <li role="presentation"> <a class="persistant-disabled" href="#stepper-step-2" data-toggle="tab" aria-controls="stepper-step-2" role="tab" title="Guardian Information"><span class="bubble"></span> Step 2. </a></li> 
+        <li role="presentation"> <a class="persistant-disabled" href="#stepper-step-3" data-toggle="tab" aria-controls="stepper-step-3" role="tab" title="Medical Condition"><span class="bubble"></span> Step 3. </a></li> 
+        <li role="presentation"> <a class="persistant-disabled" href="#stepper-step-4" data-toggle="tab" aria-controls="stepper-step-4" role="tab" title="Social History"><span class="bubble"></span> Step 4. </a></li> 
+        <li role="presentation">  <a class="persistant-disabled" href="#stepper-step-5" data-toggle="tab" aria-controls="stepper-step-5" role="tab" title="Patient Allocation"><span class="bubble"></span> Step 5. </a></li> </ul>
+        <hr />
+        <form>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" role="tabpanel" id="stepper-step-1">
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Personal Information</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    First Name <a class="fa fa-info-circle" data-toggle="firstName" title="Given Name"></a>
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="firstName" placeholder="First Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Last Name <a class="fa fa-info-circle" data-toggle="lastName" title="Surname Name"></a>
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="lastName" placeholder="Last Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Preferred Name
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="preferredName" placeholder="Preferred Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    NRIC
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="nric" placeholder="NRIC">
+                                    <p style="display: none; color:red;" id="nricError"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Address
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="address" placeholder="Address">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    Temporary Address
+                                    <a class="fa fa-info-circle" data-toggle="tempAddress" title="If residential address differ from address in NRIC"></a>
+
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="tempAddress" placeholder="Temporary Address">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    Home Number
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="homeNo" placeholder="Home Number">
+                                    <p style="display: none; color:red;" id="homeNoError"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    Handphone Number
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="handphoneNo" placeholder="Handphone number">
+                                    <p style="display: none; color:red;" id="contactNoError"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    Gender
+                                </label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="genderM" v-bind:value="0" v-model="gender">
+                                    <label for="genderM">Male</label>
+
+                                    <input type="radio" id="genderF" v-bind:value="1" v-model="gender">
+                                    <label for="genderF">Female</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Date Of Birth
+                                </label>
+                                <div class="col-md-10">
+                                    <input type="date" v-model="dob" format="yyyy-MM-dd HH:mm:ss" class="form-control" />
+                                    <span style="display: none; color:red;" id="dobError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Date of Joining
+                                </label>
+                                <div class="col-md-10">
+                                    <input type="date" v-model="startDate" format="yyyy-MM-dd HH:mm:ss" class="form-control" />
+                                    <span style="display: none; color:red;" id="startDateError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Date of Leaving (if any)</label>
+                                <div class="col-md-10">
+                                    <input type="date" v-model="endDate" format="yyyy-MM-dd HH:mm:ss" class="form-control" />
+                                    <span style="display: none; color:red;" id="endDateError"></span>
+                                </div>
+                            </div>
+
+                        </div> @* Patient Info. *@
+                    </div>
+                    <br />
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Language Preference</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Preferred Language</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="preferredLanguageID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in languageList" v-bind:value="x.list_languageID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>@* Language Preference *@
+                </div>@*End of Stepper 1*@
+                <div class="tab-pane fade in active" role="tabpanel" id="stepper-step-2">
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Guardian Information</div>
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Guardian Name
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianName" placeholder="Guardian Name">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Guardian NRIC
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianNRIC" placeholder="Guardian NRIC">
+                                    <p style="display: none; color:red;" id="nricErrorG"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Guardian Relationship
+                                </label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="guardianRelationshipID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in relationshipList" v-bind:value="x.list_relationshipID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Guardian Contact
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianContactNo" placeholder="Guardian Contact">
+                                    <p style="display: none; color:red;" id="contactErrorG"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Guardian Email
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianEmail" placeholder="Guardian Email">
+                                    <p style="display: none; color:red;" id="emailErrorG"></p>
+                                </div>
+                            </div>
+
+                            <label class="col-md-12 control-label"><b><u>Additional Guardian</u></b></label>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Guardian Name</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianName2" placeholder="Guardian Name">
+                                    <p style="display: none; color:red;" id="nameErrorG2"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Guardian NRIC</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianNRIC2" placeholder="Guardian NRIC">
+                                    <p style="display: none; color:red;" id="nricErrorG2"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Guardian Relationship</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="guardian2RelationshipID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in relationshipList" v-bind:value="x.list_relationshipID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Guardian Contact</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianContactNo2" placeholder="Guardian Contact">
+                                    <p style="display: none; color:red;" id="contactErrorG2"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Guardian Email</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="guardianEmail2" placeholder="Guardian Email">
+                                    <p style="display: none; color:red;" id="emailErrorG2"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div> @* Guardian Info. *@
+                </div> @*End of Stepper 2*@
+                <div class="tab-pane fade" role="tabpanel" id="stepper-step-3">
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Dementia Condition</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Dementia Type
+                                </label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfDementiaID" multiple>
+                                        <option disabled value="">Please select one or more</option>
+                                        <option v-for="x in dementiaTypeList" v-bind:value="x.list_dementiaTypeID">{{x.value}}</option>
+                                    </select>
+                                    <p style="display: none; color:red;" id="dementiaError"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Respite Care Service</div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Under Respite Care
+                                </label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="isRespiteCareN" v-bind:value="0" v-model="isRespiteCare">
+                                    <label for="isRespiteCareN">No</label>
+
+                                    <input type="radio" id="isRespiteCareY" v-bind:value="1" v-model="isRespiteCare">
+                                    <label for="isRespiteCareY">Yes</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Allergies</div>
+                        <div class="card-body" id="albody">
+
+                            <div class="form-group" id="cloneAllergy" xcount="0">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Allergy
+                                </label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfAllergyID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in allergyList" v-bind:value="x.list_allergyID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" id="cloneReact">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Reaction
+                                </label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfAllergyReactionID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in allergyReactionList" v-bind:value="x.list_allergyReactionID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="cloneNotes">
+                                <label class="col-md-2 control-label">Remarks (if any)</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="allergyRemarks" placeholder="Allergy Remarks">
+                                    <br /> <br />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="panel-footer" id="alfoot">
+                            <div class="text-center">
+                                <button type="button" class="btn green" id="add-al"><i class="fa fa-plus"></i></button>
+                                <button type="button" class="btn red" id="remove-al"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;">Medical Histories</b></div>
+                        <div class="card-body" id="mhbody">
+
+                            <div class="form-group" id="cloneMedDetails">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Medical Details
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="medDetails" placeholder="Med">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="cloneMedSources">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Source of Information
+                                </label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="medSourceDoc" placeholder="Medical Source">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="cloneMedNotes">
+                                <label class="col-md-2 control-label">Medical Notes</label>
+                                <div class="col-md-10">
+                                    <input class="form-control" v-model="medNotes" placeholder="Medical Notes">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="cloneMedDates">
+                                <label class="col-md-2 control-label">
+                                    <i class="required"></i>
+                                    Date of Medical Record
+                                </label>
+                                <div class="col-md-10">
+                                    <input type="date" v-model="medicalEstimatedDate" format="yyyy-MM-dd HH:mm:ss" class="form-control" />
+                                    <span style="display: none; color:red;" id="medicalEstimatedDateError"></span>
+                                    <br /> <br />
+                                </div>
+                            </div>
+
+                            <div class="panel-footer" id="alfoot">
+                                <div class="text-center">
+                                    <button type="button" class="btn green" id="add-mh"><i class="fa fa-plus"></i></button>
+                                    <button type="button" class="btn red" id="remove-mh"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> @*End of Stepper 3*@
+                <div class="tab-pane fade" role="tabpanel" id="stepper-step-4">
+                    <div class="card" style="border-color: #0FB3D8 !important;">
+                        <div class="card-header" style="background-color: #0FB3D8 !important;"><b>Social History</b></div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Mobility</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfMobilityID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in mobilityList" v-bind:value="x.list_mobilityID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Live With</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfLiveWithID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in liveWithList" v-bind:value="x.list_mobilityID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Religion</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfReligionID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in religionList" v-bind:value="x.list_religionID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Education</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfEducationID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in educationList" v-bind:value="x.list_educationID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Occupation</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfOccupationID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in occupationList" v-bind:value="x.list_occupationID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Pet</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfPetID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in petList" v-bind:value="x.list_petID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Diet</label>
+                                <div class="col-md-10">
+                                    <select class="form-control" v-model="listOfDietID">
+                                        <option disabled value="">Please select one</option>
+                                        <option v-for="x in dietList" v-bind:value="x.list_dietID">{{x.value}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Retired</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="retiredNA" v-bind:value="2" v-model="isRetired">
+                                    <label for="retiredNA">N/A</label>
+
+                                    <input type="radio" id="retiredY" v-bind:value="1" v-model="isRetired">
+                                    <label for="retiredY">Yes</label>
+
+                                    <input type="radio" id="retiredN" v-bind:value="0" v-model="isRetired">
+                                    <label for="retiredN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Exercise</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="exerciseNA" v-bind:value="2" v-model="isExercise">
+                                    <label for="exerciseNA">N/A</label>
+
+                                    <input type="radio" id="exerciseY" v-bind:value="1" v-model="isExercise">
+                                    <label for="exerciseY">Yes</label>
+
+                                    <input type="radio" id="exerciseN" v-bind:value="0" v-model="isExercise">
+                                    <label for="exerciseN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Caffeine Use</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="caffeineUseNA" v-bind:value="2" v-model="caffeineUse">
+                                    <label for="caffeineUseNA">N/A</label>
+
+                                    <input type="radio" id="caffeineUseY" v-bind:value="1" v-model="caffeineUse">
+                                    <label for="caffeineUseY">Yes</label>
+
+                                    <input type="radio" id="caffeineUseN" v-bind:value="0" v-model="caffeineUse">
+                                    <label for="caffeineUseN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Tobacco Use</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="tobaccoUseNA" v-bind:value="2" v-model="tobaccoUse">
+                                    <label for="tobaccoUseNA">N/A</label>
+
+                                    <input type="radio" id="tobaccoUseY" v-bind:value="1" v-model="tobaccoUse">
+                                    <label for="tobaccoUseY">Yes</label>
+
+                                    <input type="radio" id="tobaccoUseN" v-bind:value="0" v-model="tobaccoUse">
+                                    <label for="tobaccoUseN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Secondhand Smoker</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="secondhandSmokerNA" v-bind:value="2" v-model="secondhandSmoker">
+                                    <label for="secondhandSmokerNA">N/A</label>
+
+                                    <input type="radio" id="secondhandSmokerY" v-bind:value="1" v-model="secondhandSmoker">
+                                    <label for="secondhandSmokerY">Yes</label>
+
+                                    <input type="radio" id="secondhandSmokerN" v-bind:value="0" v-model="secondhandSmoker">
+                                    <label for="secondhandSmokerN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Alcohol Use</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="alcoholUseNA" v-bind:value="2" v-model="alcoholUse">
+                                    <label for="alcoholUseNA">N/A</label>
+
+                                    <input type="radio" id="alcoholUseY" v-bind:value="1" v-model="alcoholUse">
+                                    <label for="alcoholUseY">Yes</label>
+
+                                    <input type="radio" id="alcoholUseN" v-bind:value="0" v-model="alcoholUse">
+                                    <label for="alcoholUseN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Drug Use</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="drugUseNA" v-bind:value="2" v-model="drugUse">
+                                    <label for="drugUseNA">N/A</label>
+
+                                    <input type="radio" id="drugUseY" v-bind:value="1" v-model="drugUse">
+                                    <label for="drugUseY">Yes</label>
+
+                                    <input type="radio" id="drugUseN" v-bind:value="0" v-model="drugUse">
+                                    <label for="drugUseN">No</label>
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Sexually Active</label>
+                                <div class="col-md-10">
+                                    <input type="radio" id="sexuallyActiveNA" v-bind:value="2" v-model="sexuallyActive">
+                                    <label for="sexuallyActiveNA">N/A</label>
+
+                                    <input type="radio" id="sexuallyActiveY" v-bind:value="1" v-model="sexuallyActive">
+                                    <label for="sexuallyActiveY">Yes</label>
+
+                                    <input type="radio" id="sexuallyActiveN" v-bind:value="0" v-model="sexuallyActive">
+                                    <label for="sexuallyActiveN">No</label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> @*End of Stepper 5*@
+            <div class="tab-pane fade" role="tabpanel" id="stepper-step-5">
+                <div class="card" style="border-color: #0FB3D8 !important;">
+                    <div class="card-header" style="background-color: #0FB3D8 !important;"><b>Allocation</b></div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Assigned Caregiver</label>
+                            <div class="col-md-10">
+                                <select class="form-control" v-model="caregiverID">
+                                    <option disabled value="">Please select one</option>
+                                    <option v-for="x in caregiverList" v-bind:value="x.Id">{{x.firstName}} {{x.lastName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Assigned Doctor</label>
+                            <div class="col-md-10">
+                                <select class="form-control" v-model="doctorID">
+                                    <option disabled value="">Please select one</option>
+                                    <option v-for="x in doctorList" v-bind:value="x.Id">{{x.firstName}} {{x.lastName}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Assigned Game Therapist</label>
+                            <div class="col-md-10">
+                                <select class="form-control" v-model="gameTherapistID">
+                                    <option disabled value="">Please select one</option>
+                                    <option v-for="x in gameTherapistList" v-bind:value="x.Id">{{x.firstName}} {{x.lastName}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="addButton" v-on:click="addPatient" class="buttonSelector">
+                    &nbsp;Add
+                </button>
+            </div>@*End of Stepper 5*@
+
+                
+            </form>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                caregiverID: 0,
+                doctorID: 0,
+                gameTherapistID: 0,
+                caregiverList: [],
+                doctorList: [],
+                gameTherapistList: [],
+                languageList: [],
+                relationshipList: [],
+                dementiaTypeList: [],
+                allergyList: [],
+                allergyReactionList: [],
+                mobilityList: [],
+                liveWithList: [],
+                religionList: [],
+                educationList: [],
+                occupationList: [],
+                petList: [],
+                dietList: [],
+                gender: 0,
+                preferredLanguageID: 1,
+                guardianRelationshipID: 1,
+                guardian2RelationshipID: 1,
+                isRespiteCare: 0,
+                isRetired: 2,
+                isExercise: 2,
+                caffeineUse: 2,
+                tobaccoUse: 2,
+                secondhandSmoker: 2,
+                alcoholUse: 2,
+                drugUse: 2,
+                sexuallyActive: 2,
+                dob: null,
+                firstName: null,
+                lastName: null,
+                preferredName: null,
+                nric: null,
+                address: null,
+                tempAddress: null,
+                homeNo: null,
+                handphoneNo: null,
+                startDate: null,
+                endDate: null,
+                guardianName: null,
+                guardianNRIC: null,
+                guardianContactNo: null,
+                guardianEmail: null,
+                guardianName2: null,
+                guardianNRIC2: null,
+                guardianContactNo2: null,
+                guardianEmail2: null,
+                listOfAllergyID: null,
+                listOfDementiaID: [],
+                allergyRemarks: null,
+                medDetails: null,
+                medSourceDoc: null,
+                medNotes: null,
+                medicalEstimatedDate: null,
+                listOfMobilityID: null,
+                listOfLiveWithID: null,
+                listOfReligionID: null,
+                listOfEducationID: null,
+                listOfOccupationID: null,
+                listOfPetID: null,
+                listOfDietID: null,
+                listOfAllergyReactionID: null,
+                
+            },
+            mounted() {
+
+                // Fill in drop down lists
+                this.loadData();
+            },
+            methods: {
+                loadData: function (msg) {
+                    var vm = this;
+
+                    $.ajax({ url: "/api/list?token=123&type=Language", method: "GET" })
+                        .done(function (response) {
+                            vm.languageList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Relationship", method: "GET" })
+                        .done(function (response) {
+                            vm.relationshipList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=DementiaType", method: "GET" })
+                        .done(function (response) {
+                            vm.dementiaTypeList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Allergy", method: "GET" })
+                        .done(function (response) {
+                            vm.allergyList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=AllergyReaction", method: "GET" })
+                        .done(function (response) {
+                            vm.allergyReactionList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Mobility", method: "GET" })
+                        .done(function (response) {
+                            vm.mobilityList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=LiveWith", method: "GET" })
+                        .done(function (response) {
+                            vm.liveWithList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Religion", method: "GET" })
+                        .done(function (response) {
+                            vm.religionList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Education", method: "GET" })
+                        .done(function (response) {
+                            vm.educationList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Occupation", method: "GET" })
+                        .done(function (response) {
+                            vm.occupationList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Pet", method: "GET" })
+                        .done(function (response) {
+                            vm.petList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/list?token=123&type=Diet", method: "GET" })
+                        .done(function (response) {
+                            vm.dietList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/user/role?token=123&masked=0&role=Caregiver", method: "GET" })
+                        .done(function (response) {
+                            vm.caregiverList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/user/role?token=123&masked=0&role=Doctor", method: "GET" })
+                        .done(function (response) {
+                            vm.doctorList = response.data;
+                        });
+
+                    $.ajax({ url: "/api/user/role?token=123&masked=0&role=GameTherapist", method: "GET" })
+                        .done(function (response) {
+                            vm.gameTherapistList = response.data;
+                        });
+                },
+                addPatient: function () {
+                    var patient = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        preferredName: preferredName,
+                        nric: nric,
+                        gender: gender,
+                        dob: dob,
+                        address: address,
+                        tempAddress: tempAddress,
+                        homeNo: homeNo,
+                        handphoneNo: handphoneNo,
+                        startDate: startDate,
+                        endDate: endDate ? null : this.endDate,
+                        guardianName: guardianName,
+                        guardianNRIC: guardianNRIC,
+                        guardianContactNo: guardianContactNo,
+                        guardianEmail: guardianEmail,
+                        guardianName2: guardianName2 ? null : this.guardianName2,
+                        guardianNRIC2: guardianNRIC2 ? null : this.guardianNRIC2,
+                        guardianContactNo2: guardianContactNo2 ? null : guardianContactNo2,
+                        guardianEmail2: guardianEmail2 ? null : guardianEmail2,
+                        listOfAllergyID: listOfAllergyID,
+                        listOfDementiaID: listOfDementiaID,
+                        allergyRemarks: allergyRemarks,
+                        medDetails: medDetails,
+                        medSourceDoc: medSourceDoc,
+                        medNotes: medNotes,
+                        medicalEstimatedDate: medicalEstimatedDate,
+                        listOfMobilityID: listOfMobilityID,
+                        listOfLiveWithID: listOfLiveWithID,
+                        listOfReligionID: listOfReligionID,
+                        listOfEducationID: listOfEducationID,
+                        listOfOccupationID: listOfOccupationID,
+                        listOfPetID: listOfPetID,
+                        listOfDietID: listOfDietID,
+                        listOfAllergyReactionID: listOfAllergyReactionID,
+                        preferredLanguageID: preferredLanguageID,
+                        guardianRelationshipID: guardianRelationshipID,
+                        guardian2RelationshipID: guardian2RelationshipID,
+                        isRespiteCare: isRespiteCare,
+                        isRetired: isRetired,
+                        isExercise: isExercise,
+                        caffeineUse: caffeineUse,
+                        tobaccoUse: tobaccoUse,
+                        secondhandSmoker: secondhandSmoker,
+                        alcoholUse: alcoholUse,
+                        drugUse: drugUse,
+                        sexuallyActive: sexuallyActive,
+                        caregiverID: caregiverID,
+                        doctorID: doctorID,
+                        gameTherapistID: gameTherapistID,
+                    };
+                    console.log(JSON.stringify(patient));
+                    $.ajax({
+                        url: "/api/patient/add", method: "PUT",
+                        headers: { "token": "1234", "content-type": "application/json" },
+                        data: JSON.stringify(patient)
+                    }).done(function (response) {
+                        console.log(response);
+                        if (response.status == "success")
+                            console.log(response.message);
+                    }).fail(function (err) {
+                        console.dir(err);
+                        alert(err.message);
+                    });
+                },
+            }
+        });
+    </script>
+}

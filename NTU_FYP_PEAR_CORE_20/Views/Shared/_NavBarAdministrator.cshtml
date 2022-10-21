@@ -1,0 +1,67 @@
+﻿@*can add model and make it dynamic and global for all other role types to use*@
+
+<div class="mobile-mask"></div>
+<nav class="navClass">
+    <div class="m-logo">
+        <img class="logo__icon" src="~/images/pear_hd.png" title="PEAR" alt="PEAR" style="width: 100px; height: auto;" />
+    </div>
+    @*<div class="nav__item overview">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            <span>Overview</span>
+        </div>*@
+    <label class="nav__label">Accounts</label>
+    <div class="nav__item">
+        <i class="fa fa-users" aria-hidden="true"></i>
+        <span>
+            <a asp-controller="administrator" asp-action="listaccounts">Manage Accounts</a>
+        </span>
+    </div>
+    <div class="nav__item">
+        <i class="fa fa-user-plus" aria-hidden="true" S></i>
+        <span>
+            <a asp-area="Identity" asp-page="/Account/Register">Register Account</a>
+        </span>
+    </div>
+    <div class="nav__item">
+        <i class="fa fa-ban" aria-hidden="true"></i>
+        <span>
+            <a asp-controller="administrator" asp-action="listroles" asp-route-from="adm">Manage Roles</a>
+        </span>
+    </div>
+
+    <label class="nav__label">Centres</label>
+    <div class="nav__item">
+        <i class="fa fa-building-o" aria-hidden="true"></i>
+        <span>Manage Centres</span>
+    </div>
+
+    <label class="nav__label">Lists</label>
+    <div class="nav__item">
+        <i class="fa fa-list" aria-hidden="true"></i>
+        <span>Manage Lists</span>
+    </div>
+
+    <label class="nav__label">Logs</label>
+    <div class="nav__item">
+        <i class="fa fa-user" aria-hidden="true"></i>
+        <span>Account Logs</span>
+    </div>
+    <div class="nav__item">
+        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        <span>
+            <a href="/Administrator/ApproveRejectLogs">Approve Reject Logs</a>
+        </span>
+    </div>
+
+
+    <label class="nav__label">Developer</label>
+    <div class="nav__item">
+        <i class="fa fa-wrench" aria-hidden="true"></i>
+        <span>
+            <a asp-controller="administrator" asp-action="listroles" asp-route-from="dev">Edit Roles</a>
+        </span>
+    </div>
+
+
+
+</nav>

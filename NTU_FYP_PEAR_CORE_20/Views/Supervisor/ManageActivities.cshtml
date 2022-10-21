@@ -1,0 +1,108 @@
+﻿@{
+    ViewData["Title"] = "Patient Management";
+}
+
+<script>
+    function filter() {
+        otable = $('#sample_3').dataTable();
+        var compulsory = $('input:checkbox[name="isCompulsory"]:checked').map(function () {
+            return '^' + this.value + ' ';
+            //return '^' + this.value + ' \$';
+        }).get().join('|');
+        otable.fnFilter(compulsory, 1, true, false, false, false);
+        var fixed = $('input:checkbox[name="isFixed"]:checked').map(function () {
+            return '^' + this.value + ' ';
+            //return '^' + this.value + '\$';
+        }).get().join('|');
+        otable.fnFilter(fixed, 2, true, false, false, false);
+        var group = $('input:checkbox[name="isGroup"]:checked').map(function () {
+            return '^' + this.value + ' ';
+            //return '^' + this.value + '\$';
+        }).get().join('|');
+        otable.fnFilter(group, 3, true, false, false, false);
+    }
+</script>
+
+<div id="app">
+    <div class="card mb-3">
+        <div class="card-header">
+            Manage Activites
+        </div>
+        <div class="card-body">
+            <table class="table table-striped table-bordered table-hover dt-responsive " id="sample_3" cellspacing="0" style="width:100%">
+                <thead>
+                    <tr>
+                        <th class="min-tablet">Activity Title</th>
+                        @*<th class="min-phone-l">Min Duration</th>
+            <th class="min-phone-l">Max Duration</th>*@
+                        <th> <input onchange="filter()" type="checkbox" name="isFixed" value="1"> Compulsory</th>
+                        <th> <input onchange="filter()" type="checkbox" name="isFixed" value="1"> Fixed</th>
+                        <th> <input onchange="filter()" type="checkbox" name="isGroup" value="1"> Group</th>
+                        <th> <input onchange="filter()" type="checkbox" name="isGroup" value="1"> Available</th>
+                        <th></th>
+
+                        <th class="none">Short Title</th>
+
+                        <th class="none">Activity Description</th>
+                        <th class="none">Start Date</th>
+                        <th class="none">End Date</th>
+
+                        <th class="none">Min Duration</th>
+                        <th class="none">Max Duration</th>
+                        <th class="none">Min People Required</th>
+                        <th class="none">Available on</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <button class="buttonSelector2">Edit</button>
+                            <button class="buttonSelector2">Availability</button>
+                            <button class="buttonRemove">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <a class="buttonTableAdd" href="/Supervisor/AddActivity">Add Activity</a>
+            <br />
+            <br />
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+       
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    patients: []
+                }
+            },
+            mounted() {
+                this.getPatients('&isActive=1');
+                $('.activeButton').addClass('active');
+            },
+            methods: {
+                getPatients: function (msg) {
+                    var vm = this;
+                    this.patients.splice(0);
+
+                    $.ajax({ url: "/api/patient?token=123&masked=0" + msg, method: "GET" })
+                        .done(function (response) {
+                            vm.patients = response.data;
+                        });
+                }
+            }
+        });
+    </script>
+}

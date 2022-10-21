@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Activity Logs";
+}
+
+<div id="app">
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Activity Logs</h4>
+        </div>
+        <div class="card-body">
+            <div v-if="activityLog.length > 0" class="table-responsive">
+                <table class="table table-hover dt-responsive" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="min-tablet">#</th>
+                            <th class="min-tablet">Log ID</th>
+                            <th class="desktop4">Affected</th>
+                            <th class="desktop4">Patient</th>
+                            <th class="desktop4">UserInit</th>
+                            <th class="desktop4">Date</th>
+                            <th class="desktop4">Status</th>
+                            <th class="desktop4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="(l, i) in activityLog">
+                            @*<template v-if="l.status!='Hidden'">*@
+                            <tr data-toggle="collapse" :data-target="'#collapseExample'+i">
+                                <th scope="row">{{i+1}}</th>
+                                <td>{{l.logId}}</td>
+                                <td>
+                                    <div>
+                                        <b>Type: </b>{{l.logCatName}}<br />
+                                        <b>Table: </b>{{l.tableAffected}}<br />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <b>ID: </b>{{l.patientID}}<br />
+                                        <b>Name: </b>{{l.patientName}}<br />
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <b>Role: </b>{{l.userInitRole}}<br />
+                                        <b>Name: </b>{{l.userInitName}}<br />
+                                    </div>
+                                </td>
+                                <td>{{l.createdDateTime}}</td>
+                                <td v-if="l.status=='Hidden'">Pending Related Log Approval</td>
+                                <td v-else> {{l.status}}</td>
+                                <td><i class="float-right fa fa-chevron-down fa-lg" aria-hidden="true"></i></td>
+                            </tr>
+
+                            <tr class="collapse" :id="'collapseExample'+i">
+                                <th scope="row" />
+                                <td colspan="6">
+                                    <div>
+                                        <div v-if="l.relatedLogs != null">
+                                            <b>Related Log IDs:</b>
+                                            <template v-for="rl in l.relatedLogs">
+                                                {{rl.logId}}&nbsp;
+                                            </template>
+                                            <hr />
+                                        </div>
+                                        <div v-if="l.status == 'Rejected' || l.status == 'Accepted'">
+                                            <b>User Responded:</b><br />
+                                            Role: {{l.userResRole}}<br />
+                                            Name: {{l.userResName}}<br />
+                                            <hr />
+                                        </div>
+                                        <template v-if="l.oldLogData != null">
+                                            <b>Old Log Value: </b>
+                                            <br />
+                                            {{l.oldLogData}}
+                                            <br />
+                                        </template>
+                                        <b>New Log Value: </b><br />{{l.newLogData}}<br />
+                                    </div>
+                                </td>
+                            </tr>
+                            @*</template>*@
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div v-else-if="loaded" class="text-center">No activity logs</div>
+            <div v-if="!loaded" class="text-center">
+                <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    activityLog: {},
+                    loaded: false
+                }
+            },
+            mounted() {
+                this.getPatientLogs();
+            },
+            methods: {
+                getPatientLogs: function () {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "/api/log/patients",
+                        method: "GET",
+                        headers: { "token": "1234", "content-type": "application/json" }
+                    }).done(function (response) {
+                        vm.activityLog = response.data;
+                        console.dir(vm.activityLog);
+                        vm.loaded = true;
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            }
+        });
+    </script>
+}

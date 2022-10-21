@@ -1,0 +1,177 @@
+﻿@{
+    ViewData["Title"] = "Patient Personal Preference";
+}
+
+<div id="app">
+    <div class="card mb-3">
+        <div class="card-header">
+            Personal Preference
+        </div>
+        <div class="card-body">
+            <a class="buttonTableAdd" :href="'/Supervisor/AddPatientPersonalPreference/' + patientID">Add Personal Preference</a>
+            <br /><br />
+            <h5>Likes</h5>
+            <hr />
+            <div v-if="patientPPPLikes.length > 0" class="table-responsive">
+                <table class="table table-hover dt-responsive" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="desktop4">#</th>
+                            <th class="desktop4">Likes</th>
+                            <th class="desktop4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(l, i) in patientPPPLikes">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{l.desc}}</td>
+                            <td>
+                                <button class="buttonSelector2" :value="l.prefId">Edit</button>
+                                <button class="buttonRemove" :value="l.prefId">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else-if="loaded" class="text-center">No Likes Added</div>
+            <div v-if="!loaded" class="text-center">
+                <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
+            </div>
+            <br />
+
+            <h5>Dislikes</h5>
+            <hr />
+            <div v-if="patientPPPDislikes.length > 0" class="table-responsive">
+                <table class="table table-hover dt-responsive" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="min-tablet">#</th>
+                            <th class="desktop4">Dislikes</th>
+                            <th class="desktop4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(l, i) in patientPPPDislikes">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{l.desc}}</td>
+                            <td>
+                                <button class="buttonSelector2" :value="l.prefId">Edit</button>
+                                <button class="buttonRemove" :value="l.prefId">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else-if="loaded" class="text-center">No Dislikes Added</div>
+            <div v-if="!loaded" class="text-center">
+                <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
+            </div>
+            <br />
+
+            <h5>Hobbies</h5>
+            <hr />
+            <div v-if="patientPPPHobbies.length > 0" class="table-responsive">
+                <table class="table table-hover dt-responsive " id="sample_3" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="min-tablet">#</th>
+                            <th class="desktop4">Hobbies</th>
+                            <th class="desktop4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(l, i) in patientPPPHobbies">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{l.desc}}</td>
+                            <td>
+                                <button class="buttonSelector2" :value="l.prefId">Edit</button>
+                                <button class="buttonRemove" :value="l.prefId">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else-if="loaded" class="text-center">No Hobbies Added</div>
+            <div v-if="!loaded" class="text-center">
+                <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
+            </div>
+            <br />
+
+            <h5>Habits</h5>
+            <hr />
+            <div v-if="patientPPPHabits.length > 0" class="table-responsive">
+                <table class="table table-hover dt-responsive " id="sample_3" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="min-tablet">#</th>
+                            <th class="desktop4">Habits</th>
+                            <th class="desktop4"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(l, i) in patientPPPHabits">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{l.desc}}</td>
+                            <td>
+                            <td>
+                                <button class="buttonSelector2" :value="l.prefId">Edit</button>
+                                <button class="buttonRemove" :value="l.prefId">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else-if="loaded" class="text-center">No Habits Added</div>
+            <div v-if="!loaded" class="text-center">
+                <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                patientID: null,
+                patientPPPLikes: {},
+                patientPPPDislikes: {},
+                patientPPPHobbies: {},
+                patientPPPHabits: {},
+                loaded: false
+            },
+            async mounted() {
+                this.getIdFromAddressBar();
+                this.getpatientPPP();
+            },
+            methods: {
+                getIdFromAddressBar: function () {
+                    var vm = this;
+                    var urlArray = window.location.href.split('/');
+                    var id = urlArray[urlArray.length - 1];
+                    vm.patientID = id;
+                },
+                getpatientPPP: async function () {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "/api/patient/personalpreference/" + this.patientID,
+                        method: "GET",
+                        headers: { "token": "1234", "content-type": "application/json" }
+                    }).done(function (response) {
+                        console.dir(response.data)
+                        vm.patientPPPLikes = response.data.likes;
+                        vm.patientPPPDislikes = response.data.dislikes;
+                        vm.patientPPPHabits = response.data.habits;
+                        vm.patientPPPHobbies = response.data.hobbies;
+                        vm.loaded = true;
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                }
+            }
+        });
+    </script>
+}

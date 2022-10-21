@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Add Patient Personal Preference";
+}
+
+<div id="app" class="card mb-3">
+    <div class="card-header">
+        Add Patient Personal Preference
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <div class="tab-content">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">Type</label>
+                            <div class="col-md-10">
+                                <select class="form-control" v-model="type">
+                                    <option disabled value="">Please select one</option>
+                                    <option value="Likes">Likes</option>
+                                    <option value="Dislikes">Dislikes</option>
+                                    <option value="Habits">Habits</option>
+                                    <option value="Hobbies">Hobbies</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">{{type}}</label>
+                            <div class="col-md-10">
+                                <select class="form-control" v-model="listId" v-on="onChangeType()">
+                                    <option disabled value="">Please select one</option>
+                                    <option v-if="type == 'Likes' || type == 'Dislikes'" v-for="x in likeDislikeList" v-bind:value="x.list_likeDislikeID">{{x.value}}</option>
+                                    <option v-if="type == 'Habits'" v-for="x in habitList" v-bind:value="x.list_habitID">{{x.value}}</option>
+                                    <option v-if="type == 'Hobbies'" v-for="x in hobbyList" v-bind:value="x.list_hobbyID">{{x.value}}</option>
+                                    <option value="-1">Others</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div v-if="othersSelected" class="form-group">
+                            <label class="col-md-5 control-label">Other Preferences</label>
+                            <div class="col-md-10">
+                                <input class="form-control" v-model="desc">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <br />
+
+                <button id="addButton" v-on:click="addPatientPP" class="buttonSelector">
+                    <span v-if="hasAdded" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    &nbsp;Add
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                patientID: null,
+                listId: "",
+                type: "Likes",
+                desc: null,
+                likeDislikeList: [],
+                habitList: [],
+                hobbyList: [],
+                othersSelected: false,
+                hasAdded: false
+            },
+            mounted() {
+                this.getIdFromAddressBar();
+                this.loadData();
+            },
+            methods: {
+                getIdFromAddressBar: function () {
+                    var urlArray = window.location.href.split('/');
+                    var id = urlArray[urlArray.length - 1];
+                    this.patientID = id;
+                },
+                loadData: function () {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "/api/list?token=123&type=LikeDislike", method: "GET",
+                        headers: { "token": "1234", "content-type": "application/json" }
+                    })
+                        .done(function (response) {
+                            vm.likeDislikeList = response.data;
+                        });
+
+                    $.ajax({
+                        url: "/api/list?token=123&type=Habit", method: "GET",
+                        headers: { "token": "1234", "content-type": "application/json" }
+                    })
+                        .done(function (response) {
+                            vm.habitList = response.data;
+                        });
+
+                    $.ajax({
+                        url: "/api/list?token=123&type=Hobby", method: "GET",
+                        headers: { "token": "1234", "content-type": "application/json" }
+                    })
+                        .done(function (response) {
+                            vm.hobbyList = response.data;
+                        });
+                },
+                onChangeType: function () {
+                    this.othersSelected = this.listId == -1 ? true : false;
+                },
+                addPatientPP: function () {
+                    var vm = this;
+                    vm.hasAdded = true;
+                    var patientPP = {
+                        patientId: parseInt(vm.patientID),
+                        type: vm.type,
+                        listId: vm.othersSelected ? null : vm.listId,
+                        desc: vm.othersSelected ? vm.desc : null
+                    };
+                    //console.log(JSON.stringify(patientPP));
+                    $.ajax({
+                        url: "/api/patient/personalpreference/add", method: "POST",
+                        headers: { "token": "1234", "content-type": "application/json" },
+                        data: JSON.stringify(patientPP)
+                    }).done(function (response) {
+                        console.log(response);
+                        if (response.status == "success")
+                            location.replace('/Supervisor/ManagePatientPersonalPreference/' + vm.patientID);
+                        else if (response.status == "error") {
+                            vm.hasAdded = false;
+                            alert(response.message);
+                        }
+                    }).fail(function (err) {
+                        console.dir(err);
+                        vm.hasAdded = false;
+                        alert("An error occurred!");
+                    });
+                },
+            }
+        });
+    </script>
+}

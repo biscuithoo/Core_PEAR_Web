@@ -1,0 +1,222 @@
+﻿@{
+    ViewData["Title"] = "Approve Reject Log";
+}
+
+<div id="app">
+    <div class="card mb-3">
+        <div class="card-header">
+            <h4>Approve Reject Log</h4>
+        </div>
+        <div class="card-body">
+            <div v-if="logApproveRejects.length > 0" class="table-responsive">
+                <table class="table table-hover dt-responsive" cellspacing="0" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="min-tablet">#</th>
+                            <th class="desktop4">Affected</th>
+                            <th class="desktop4">UserInit</th>
+                            <th class="desktop4">Date</th>
+                            <th class="desktop4">Status</th>
+                            <th class="desktop4">Action</th>
+                            <th class="min-tablet"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="(l, i) in logApproveRejects">
+                            <tr>
+                                <th data-toggle="collapse" :data-target="'#collapseExample'+i" scope="row">{{i+1}}</th>
+                                <td data-toggle="collapse" :data-target="'#collapseExample'+i">
+                                    <div>
+                                        <b>Type: </b>{{l.logCat}}<br />
+                                        <b>Table: </b>{{l.tableAffected}}<br />
+                                    </div>
+                                </td>
+                                <td data-toggle="collapse" :data-target="'#collapseExample'+i">
+                                    <div>
+                                        <b>Role: </b>{{l.userInitRole}}<br />
+                                        <b>Name: </b>{{l.userInitName}}<br />
+                                    </div>
+                                </td>
+                                <td data-toggle="collapse" :data-target="'#collapseExample'+i">{{l.createdDateTime}}</td>
+                                <td data-toggle="collapse" :data-target="'#collapseExample'+i">{{l.status}}</td>
+                                <td v-if="l.status == 'Pending'">
+                                    <button class="buttonSelector2" data-toggle="modal" data-target="#acceptModal" v-on:click="selectedAR = l.logId">Approve</button>
+                                    <button class="buttonRemove" data-toggle="modal" data-target="#rejectModal" v-on:click="selectedAR = l.logId">Reject</button>
+                                </td>
+                                <td v-else />
+                                <td data-toggle="collapse" :data-target="'#collapseExample'+i">
+                                    <i class="float-right fa fa-chevron-down fa-lg" aria-hidden="true"></i>
+                                </td>
+                            </tr>
+
+                            <tr class="collapse" :id="'collapseExample'+i">
+                                <th scope="row" />
+                                <td colspan="6">
+                                    <div>
+                                        <b v-if="l.status == 'Rejected' && l.rejectReason != null">Reject Reason:<br /></b>{{l.rejectReason}}<br />
+                                        <template v-if="l.oldLogData != null">
+                                            <b>Old Log Value:<br /></b>
+                                            {{l.oldLogData}}
+                                            <br />
+                                        </template>
+                                        <b>New Log Value:<br /></b>{{l.newLogData}}<br />
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </template>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div v-else-if="loaded" class="text-center">No approval requests</div>
+            <div v-if="!loaded" class="text-center">
+                <div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>
+            </div>
+
+            <br />
+
+            <!-- Modal -->
+            <div class="modal fade" id="acceptModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h5>Approve Request?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-footer  border-0">
+                            <div class="float-right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-info" v-bind:disabled="hasApprovedReject" v-on:click="acceptAR">
+                                    <span v-if="hasApprovedReject" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Approve
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header border-0">
+                            <h5>Reject Request?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="message-text" class="col-form-label">Reject Reason (if any):</label>
+                                    <textarea class="form-control" id="message-text" v-model="rejectReason"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer border-0">
+                            <div class="float-right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-danger" v-bind:disabled="hasApprovedReject" v-on:click="rejectAR">
+                                    <span v-if="hasApprovedReject" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    &nbsp;Reject
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    logApproveRejects: {},
+                    selectedAR: null,
+                    loaded: false,
+                    rejectReason: null,
+                    hasApprovedReject: false
+                }
+            },
+            mounted() {
+                this.getLogAR();
+            },
+            methods: {
+                getLogAR: function () {
+                    var vm = this;
+
+                    $.ajax({
+                        url: "/api/log/approvereject",
+                        method: "GET",
+                        headers: { "token": "3214", "content-type": "application/json" }
+                    }).done(function (response) {
+                        vm.logApproveRejects = response.data;
+                        //console.dir(response.data);
+                        vm.loaded = true;
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                },
+                acceptAR: function () {
+                    var vm = this;
+                    vm.hasApprovedReject = true;
+                    var ar = {
+                        logId: vm.selectedAR,
+                        rejectReason: vm.rejectReason != null ? vm.htmlEscape(vm.rejectReason) : vm.rejectReason,
+                        status: "Approved"
+                    };
+                    //console.log(ar);
+                    $.ajax({
+                        url: "/api/log/approvereject", method: "PUT",
+                        headers: { "token": "1234", "content-type": "application/json" },
+                        data: JSON.stringify(ar)
+                    }).done(function (response) {
+                        //console.log(response);
+                        if (response.status == "success")
+                            window.location.reload();
+                        else if (response.status == "error") {
+                            vm.hasApprovedReject = false;
+                            alert(response.message);
+                        }
+                    }).fail(function (err) {
+                        console.dir(err);
+                        vm.hasApprovedReject = false;
+                        alert("An error occurred!");
+                    });
+                },
+                rejectAR: function () {
+                    this.hasApprovedReject = true;
+                    var ar = {
+                        logId: this.selectedAR,
+                        rejectReason: this.rejectReason != null ? this.htmlEscape(this.rejectReason) : this.rejectReason,
+                        status: "Rejected"
+                    };
+                    //console.log(ar);
+                    $.ajax({
+                        url: "/api/log/approvereject", method: "PUT",
+                        headers: { "token": "1234", "content-type": "application/json" },
+                        data: JSON.stringify(ar)
+                    }).done(function (response) {
+                        //console.log(response);
+                        if (response.status == "success")
+                            window.location.reload();
+                    }).fail(function (err) {
+                        console.dir(err);
+                        alert(err.message);
+                    });
+                },
+                htmlEscape: function (str) {
+                    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                }
+            }
+        });
+    </script>
+}

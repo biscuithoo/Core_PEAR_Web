@@ -1,0 +1,151 @@
+﻿@model List<ListAccountRoleViewModel>
+
+
+@{
+    ViewData["Title"] = "Manage Accounts";
+}
+
+<div class="displayaccounts">
+    @if (Model.Any())
+    {
+        <div class="card rounded">
+            <div class="card-header">
+
+                <div class="row">
+                    <div class="col">
+                        <h3>Manage Accounts</h3>
+                    </div>
+                    <div class="col-md-auto">
+                        <input class="form-control mr-sm-2" id="filterInput" type="text" onkeyup="accountSearch()" placeholder="Search..." aria-label="Search" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <table id="" class="table table-hover" data-pagination="true" data-page-list="[5, 10, 25, 50, 100, ALL]" data-page-size="5">
+                    <thead>
+                        <tr class="">
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Date Created</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accountsTable">
+                        @{
+                            int count = 1;
+                        }
+                        @foreach (var user in Model)
+                        {
+                        <tr class="parentAccount btn-nav-accordion collapsed" data-toggle="collapse" data-target="#collapseme_@count">
+                            <th scope="row">
+                                @count
+
+                                <script>
+                                            $('.collapse').on('show.bs.collapse', function () {
+                                                $(this).parent().removeClass("zeroPadding_@count");
+                                            });
+
+                                            $('.collapse').on('hide.bs.collapse', function () {
+                                                $(this).parent().addClass("zeroPadding_@count");
+                                            });
+                                </script>
+                            </th>
+                            <td>@user.appUser.preferredName</td>
+                            @*<td>@user.appUser.firstName @user.appUser.lastName</td>*@
+                            <td>@user.appUser.createdDateTime.ToString("MM/dd/yyyy")</td>
+
+                            @if (user.userRole.Equals(""))
+                            {
+                                <td style="color:red">
+                                    Unassigned
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    @user.userRole
+                                </td>
+                            }
+
+                            <td class="accountStatusTData">
+                                @if (user.appUser.isDeleted)
+                                {
+                                    <i class="fa fa-circle text-danger" aria-hidden="true"></i>
+                                    <span class="accountStatus">Deleted</span>
+                                }
+                                else
+                                {
+                                    if (user.appUser.isActive)
+                                    {
+                                        <i class="fa fa-circle text-success" aria-hidden="true"></i>
+                                        <span class="accountStatus">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-circle text-warning" aria-hidden="true"></i>
+                                        <span class="accountStatus">Locked</span>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (!user.appUser.isDeleted)
+                                {
+                                    <form class="d-inline-flex" asp-action="DeleteAccount" asp-route-id="@user.appUser.Id" method="post">
+                                        <a asp-action="EditUser" asp-controller="Administrator" asp-route-id="@user.appUser.Id" class="btn btn-link p-1 lsAccSettings" title="Edit Account" data-toggle="tooltip" data-placement="top">
+                                            <i class="lsAccSettingsIcon fa fa-cog fa-lg" aria-hidden="true"></i>
+                                        </a>
+
+                                        <button type="submit" class="btn btn-link p-1 lsAccDelete" title="Delete Account" data-toggle="tooltip" data-placement="top"
+                                                onclick="return confirm('Are you sure you want to delete this Account : @user.appUser.preferredName')">
+                                            <i class="lsAccDeleteIcon fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+                                }
+                                <i class="float-right fa fa-chevron-up fa-lg" aria-hidden="true"></i>
+                            </td>
+                        </tr>
+                        <tr class="childAccount">
+                            <td colspan="6" class="zeroPadding_@count" style="padding:0px">
+                                <div class="collapse out" id="collapseme_@count">
+                                    <div class="row p-3">
+                                        <div class="col">
+                                            <card>
+                                                <div class="card-body text-center">
+                                                    Info of Account
+                                                </div>
+                                            </card>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        { count++; }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div data-pagination="" data-num-pages="numPages()" data-current-page="currentPage" data-max-size="maxSize" data-boundary-links="true"></div>
+
+    }
+    else
+    {
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Manage Accounts</h3>
+            </div>
+            <div class="card-body text-center">
+
+                <h5 class="card-title">
+                    Use the button below to create new Account
+                </h5>
+                <a class="btn btn-primary" style="width:auto" asp-controller="Account" asp-action="Register">Create Account</a>
+            </div>
+        </div>
+    }
+
+</div>

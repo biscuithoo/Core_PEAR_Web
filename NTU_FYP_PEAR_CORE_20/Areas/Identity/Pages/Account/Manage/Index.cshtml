@@ -1,0 +1,151 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+
+<div class="row">
+    <div class="col-md-8">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.PhoneNumber"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.SecretQuestionID"></label>
+                @if (Model.SecretQnsList.Any())
+                {
+                    @Html.DropDownListFor(model => model.Input.SecretQuestionID, Model.SecretQnsList, "Select Question ...", new { @class = "form-control" })
+                }
+                else
+                {
+                    <input class="form-control" type="text" name="foo" placeholder="No Qn Created" disabled />
+                    <input type="hidden" asp-for="Input.SecretQuestionID" value="0" />
+                }
+                <span asp-validation-for="Input.SecretQuestionID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.SecretQuestionAnswer"></label>
+                <input asp-for="Input.SecretQuestionAnswer" class="form-control" />
+                <span asp-validation-for="Input.SecretQuestionAnswer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.SecretQuestion2ID"></label>
+                @if (Model.SecretQnsList.Any())
+                {
+                    @Html.DropDownListFor(model => model.Input.SecretQuestion2ID, Model.SecretQnsList, "Select Question ...", new { @class = "form-control" })
+                }
+                else
+                {
+                    <input class="form-control" type="text" name="foo" placeholder="No Qn Created" disabled />
+                    <input type="hidden" asp-for="Input.SecretQuestion2ID" value="0" />
+                }
+                <span asp-validation-for="Input.SecretQuestion2ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.SecretQuestion2Answer"></label>
+                <input asp-for="Input.SecretQuestion2Answer" class="form-control" />
+                <span asp-validation-for="Input.SecretQuestion2Answer" class="text-danger"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <form id="profile-image-form" method="post" enctype="multipart/form-data">
+
+            <div id="posterframe">
+                <!-- fetch profile picture using Cloudinary according to the requested transformations -->
+                @Html.Raw(Cloudinary.Api.UrlImgUp.Signed(true).Secure().Action("fetch")
+                    .Transform(new Transformation()
+                    .Width(240)
+                    .Height(240)
+                    .Crop("thumb")
+                    .Radius(20)
+                    .Chain())// apply current stack of transformations before processing next)
+                    .BuildImageTag(IndexModel.url))
+            </div>
+            <input type="file" id="images" value="Upload" name="images" class="form-control form-control-md border-0" multiple accept="image/gif, image/jpeg, image/png" onchange="loadFile(event)" />
+            <img id="output" class="pb-2" />
+            <div class="col text-center">
+                <input asp-page-handler="Upload" id="upload_image" type="submit" value="Upload Image" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        var loadFile = function (event) {
+            const fi = document.getElementById('images');
+            // Check if any file is selected.
+            if (fi.files.length > 0) {
+                for (const i = 0; i <= fi.files.length - 1; i++) {
+                    const fsize = fi.files.item(i).size;
+                    const file = Math.round((fsize / 1024));
+                    // cloudinary limit 10mb
+                    if (file >= 10240) {
+                        alert("Image too big. Please select a file less than 10mb");
+                        $('#upload_image').attr('disabled', true);
+                        this.submit();
+                    }
+                    else {
+                        $('#upload_image').removeAttr("disabled");
+                    }
+
+                }
+            }
+        };
+
+        const MAX_WIDTH = 240
+        const MAX_HEIGHT = 240
+
+        document.querySelector('input[type="file"]').addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                var img = document.getElementById('output');
+                img.onerror = function () {
+                    alert("Invalid image format. Please upload only JPEG, PNG or GIF.");
+                    $('#upload_image').attr('disabled', true);
+                    this.submit();
+                }
+                img.onload = function () {
+                    if (!this.src.startsWith('data:')) {
+                        this.src = resizeImage(this, MAX_WIDTH, MAX_HEIGHT)
+                    }
+                }
+                img.src = URL.createObjectURL(this.files[0]);
+            }
+        })
+
+        const resizeImage = (img, maxWidth, maxHeight) => {
+            var newWidth = img.width, newHeight = img.height
+            if (img.width > img.height && img.width > maxWidth) {
+                var newHeight = Math.floor(img.height * (maxWidth / img.width))
+                var newWidth = maxWidth
+            }
+            else if (img.height > maxHeight) {
+                var newHeight = maxHeight
+                var newWidth = Math.floor(img.width * (maxHeight / img.height))
+            }
+            const canvas = document.createElement('canvas')
+            canvas.width = newWidth
+            canvas.height = newHeight
+            var ctx = canvas.getContext("2d")
+            ctx.drawImage(img, 0, 0, newWidth, newHeight)
+            return canvas.toDataURL("image/jpeg")
+        }
+    </script>
+}
